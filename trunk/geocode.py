@@ -4,6 +4,7 @@ import urllib2
 import urllib
 import time
 import re
+import csv
 
 
 address = "1600 Amphitheatre Parkway, Mountain View, CA, USA"
@@ -20,9 +21,41 @@ class GeoCodingClass:
 			601 : "G_GEO_MISSING_QUERY",
 			602 : "G_GEO_UNKNOWN_ADDRESS",
 			603 : "G_GEO_UNAVAILABLE_ADDRESS",
-			610 : "G_GEO_BAD_KEY"
+			610 : "G_GEO_BAD_KEY",
 			620 : "G_GEO_TOO_MANY_QUERIES"
 			}
+
+	def GeoCodeCSV(self, inputFile, outputFile):
+
+		badStatCode = 0
+		inCSV = csv.DictReader(inputFile, delimiter=',', quotechar='"')
+		outCSV = None
+
+		for data in inCSV:
+			if not('address' in data):
+				return -1
+
+			if outCSV == None:
+				k = data.keys() + ['lat', 'long']
+				outCSV = csv.DictWriter(outputFile, k)
+
+
+			res = self.GeoCodeAddress(data['address'])
+
+			print res[0], res[1]
+
+
+			if type(res) is int:
+				badStatCode += 1
+				data['lat'] = res
+				data['long'] = res
+			else:
+				data['lat'] = res[0]
+				data['long'] = res[1]
+
+			outCSV.writerow(data)
+
+		return badStatCode
 
 	def GeoCodeAddress(self, address):
 
@@ -65,5 +98,4 @@ class GeoCodingClass:
 
 GeoCoding = GeoCodingClass()
 
-for x in range(100):
-	print GeoCoding.GeoCodeAddress(address)
+print GeoCoding.GeoCodeCSV(open("addresses.csv"), open("geocoded.csv", "w"))
