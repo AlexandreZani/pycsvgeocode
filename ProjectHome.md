@@ -1,0 +1,3 @@
+This project is part of a larger set of python module to solve a TSP-like problem for a delivery company. This module simply takes a CSV file containing an address field and a number of other fields and geocodes each address. It then creates a CSV file which contains the same fields as before + long and lat fields which contain the geocode.
+
+Some day if I have time I'll include the other project, but as of now, I am paid to develop the project as a whole and don't want to release it to the world until I receive payment. I'm sure all of you who need to eat, drink and pay for rent out there understand the feeling.
